@@ -1,0 +1,83 @@
+name: Validate OpenSpec format
+
+on:
+  workflow_call:
+    inputs:
+      needs-info-label:
+        description: Label applied when required sections are missing
+        type: string
+        default: needs-info
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check body for required OpenSpec sections
+        uses: actions/github-script@v7
+        env:
+          NEEDS_INFO_LABEL: ${{ inputs.needs-info-label }}
+        with:
+          script: |
+            const label = process.env.NEEDS_INFO_LABEL;
+            const isPR = !!context.payload.pull_request;
+            const target = isPR ? context.payload.pull_request : context.payload.issue;
+            if (!target) {
+              core.info('No issue or pull request in payload; nothing to validate.');
+              return;
+            }
+            const body = target.body || '';
+
+            const required = [
+              { name: 'Why',                    pattern: /^#{1,3}\s*Why\b|^\*{2}Why\*{2}/im },
+              { name: 'What Changes',           pattern: /^#{1,3}\s*What Changes\b|^\*{2}What Changes\*{2}/im },
+              { name: 'MODIFIED Requirements (RFC 2119)', pattern: /^#{1,3}\s*(MODIFIED|ADDED|REMOVED) Requirements\b/im },
+              { name: 'RFC 2119 keyword (SHALL/MUST)',    pattern: /\b(SHALL|MUST)\b/ },
+              { name: 'GIVEN/WHEN/THEN scenario', pattern: /GIVEN[\s\S]*WHEN[\s\S]*THEN/ },
+              { name: 'Verification checklist', pattern: /^#{1,3}\s*Verification\b[\s\S]*?\b\d+\.\d+\b/im },
+            ];
+
+            const missing = required.filter(r => !r.pattern.test(body)).map(r => r.name);
+            const issue_number = target.number;
+            const { owner, repo } = context.repo;
+
+            const labels = (target.labels || []).map(l => typeof l === 'string' ? l : l.name);
+
+            if (missing.length === 0) {
+              if (labels.includes(label)) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: label })
+                  .catch(e => core.warning(`Could not remove label: ${e.message}`));
+              }
+              core.info('All OpenSpec sections present.');
+              return;
+            }
+
+            const comment = [
+              `### OpenSpec format check failed`,
+              ``,
+              `This ${isPR ? 'pull request' : 'issue'} body is missing required OpenSpec sections:`,
+              ``,
+              ...missing.map(m => `- [ ] **${m}**`),
+              ``,
+              `Please edit the body to include them. See the [contributing guide](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md) for the format.`,
+            ].join('\n');
+
+            // Forked-PR tokens are read-only; fall back to failing the check.
+            try {
+              await github.rest.issues.addLabels({ owner, repo, issue_number, labels: [label] });
+              const { data: comments } = await github.rest.issues.listComments({ owner, repo, issue_number, per_page: 100 });
+              const existing = comments.find(c =>
+                c.user.type === 'Bot' && c.body.includes('OpenSpec format check failed'));
+              if (existing) {
+                await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body: comment });
+              } else {
+                await github.rest.issues.createComment({ owner, repo, issue_number, body: comment });
+              }
+            } catch (e) {
+              core.warning(`Could not label/comment (read-only token?): ${e.message}`);
+            }
+
+            core.setFailed(`Missing OpenSpec sections: ${missing.join(', ')}`);

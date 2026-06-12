@@ -1,0 +1,79 @@
+name: Bug Report (OpenSpec)
+description: Report a defect using the OpenSpec change format.
+title: "[Bug]: "
+labels: ["bug", "openspec"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        All Jam&Sw issues follow the **OpenSpec format**. Each section below is required.
+        See [CONTRIBUTING.md](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md)
+        for the format and RFC 2119 conventions.
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: A concise statement of the problem and its impact. What is broken, and why does it matter?
+      placeholder: |
+        The capture panel drops unsaved drafts when dismissed with Escape, losing user input.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-changes
+    attributes:
+      label: What Changes
+      description: Bullet summary of the fix or change needed.
+      placeholder: |
+        - Preserve draft content when the capture panel is dismissed
+        - Restore the draft the next time the panel is summoned
+    validations:
+      required: true
+
+  - type: textarea
+    id: modified-requirements
+    attributes:
+      label: MODIFIED Requirements
+      description: >
+        State the correct behavior using RFC 2119 language (SHALL, MUST, SHOULD, MAY).
+        Include a "(Previously: ...)" note describing the broken behavior.
+      placeholder: |
+        ### Requirement: Draft preservation
+        The capture panel SHALL preserve unsaved draft content when dismissed,
+        and MUST restore it when the panel is next summoned.
+        (Previously: dismissing the panel discarded the draft silently.)
+    validations:
+      required: true
+
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario
+      description: A concrete, observable GIVEN/WHEN/THEN test case a reviewer can follow to verify the fix. Attach before/after screenshots here if applicable.
+      placeholder: |
+        GIVEN the capture panel is open with the text "buy milk" typed
+        WHEN the user presses Escape and then re-opens the panel
+        THEN the panel displays "buy milk" in the input field
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: Numbered checklist (1.1, 1.2, ...) mapping onto the scenario.
+      placeholder: |
+        1.1 Open the capture panel and type text
+        1.2 Press Escape to dismiss the panel
+        1.3 Re-open the panel and confirm the text is restored
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Environment, version, logs, or anything else relevant. (Optional)
+    validations:
+      required: false
