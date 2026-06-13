@@ -1,13 +1,27 @@
 # Contributing to Jam&Sw
 
-Every issue and pull request in the Jam&Sw organization follows the
-**OpenSpec format**. It makes changes reviewable, testable, and honest: a
-reader should be able to understand why a change exists, what the correct
-behavior is, and exactly how to verify it: without reading the diff first.
+Feature work in the Jam&Sw organization follows the **OpenSpec format**. It
+makes changes reviewable, testable, and honest: a reader should be able to
+understand why a change exists, what the correct behavior is, and exactly how
+to verify it, without reading the diff first.
+
+## When the OpenSpec format is required
+
+The format applies to **feature changes**: anything that adds or alters a
+requirement or user-visible behavior. A change is treated as a feature when
+its title uses the conventional `feat:` prefix or its branch starts with
+`feat/`.
+
+Everything else is exempt and needs no spec sections: `docs:`, `chore:`,
+`fix:`, `ci:`, `test:`, `refactor:`, `style:`, `build:`, and `perf:` changes,
+along with bug reports and other non-feature issues. Write a plain Summary /
+Changes / Verification body for those. Forcing requirement language and
+GIVEN/WHEN/THEN scenarios onto a docs typo or a dependency bump adds noise,
+not clarity.
 
 ## The OpenSpec format
 
-Every issue and PR body contains these sections, in order:
+Every **feature** issue and PR body contains these sections, in order:
 
 ### 1. Why
 
@@ -70,14 +84,16 @@ SHALL…", never "It should…").
 
 ## Enforcement
 
-- Issue forms in this repository require every OpenSpec section, and blank
-  issues are disabled organization-wide.
 - The reusable workflow
   [`validate-openspec.yml`](.github/workflows/validate-openspec.yml) checks
-  issue and PR bodies for the required sections. Repositories opt in with the
-  two-line caller in [`examples/validate.yml`](examples/validate.yml).
-- Bodies missing sections get a `needs-info` label and a comment listing
-  what's missing; the label is removed automatically once the body is fixed.
+  feature issue and PR bodies for the required sections. Repositories opt in
+  with the two-line caller in [`examples/validate.yml`](examples/validate.yml).
+- The workflow only runs its checks on feature changes (title `feat:` or
+  branch `feat/`, or an issue labeled `feature`/`enhancement`). Non-feature
+  changes pass automatically.
+- Feature bodies missing sections get a `needs-info` label and a comment
+  listing what's missing; the label is removed automatically once the body is
+  fixed, or once the change is reclassified as non-feature.
 
 ## Repository-local overrides
 
