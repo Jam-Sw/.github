@@ -1,6 +1,6 @@
-# Contributing to Jam&Sw
+# Contributing to Jam-Sw
 
-Every issue and pull request in the Jam&Sw organization follows the
+Every issue and pull request in the Jam-Sw organization follows the
 **OpenSpec format**. It makes changes reviewable, testable, and honest: a
 reader should be able to understand why a change exists, what the correct
 behavior is, and exactly how to verify it: without reading the diff first.
