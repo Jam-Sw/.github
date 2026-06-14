@@ -17,6 +17,7 @@ native apps and browser extensions that do one thing instantly.
 
 | Product | What it does | Status |
 | --- | --- | --- |
+| **[reveil](https://github.com/Jam-Sw/reveil)** | Cross-platform CLI that wakes your whole toolchain: one command updates every package manager in parallel, with a live status board, framed output, version and size deltas, and OS-native scheduling on macOS. | **Released** · [`@filecrop/reveil`](https://www.npmjs.com/package/@filecrop/reveil) |
 | **InstantNotes** | Native macOS notes app built around instant capture: a global shortcut summons a capture panel, full-text search retrieves anything, tags replace folders. Local-first and private. | In development |
 | **Enshortification** | Chrome extension that opens every YouTube video at its most relevant highlight and surfaces the runner-up moments as clickable chips: ranked locally from replay heatmaps, comment hot spots, and your own habits. | In development |
 
