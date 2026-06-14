@@ -30,6 +30,37 @@ jobs:
               return;
             }
             const body = target.body || '';
+            const title = (target.title || '').trim();
+            const branch = isPR ? ((context.payload.pull_request.head || {}).ref || '') : '';
+
+            const issue_number = target.number;
+            const { owner, repo } = context.repo;
+            const labels = (target.labels || []).map(l => typeof l === 'string' ? l : l.name);
+
+            async function clearNeedsInfo() {
+              if (labels.includes(label)) {
+                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: label })
+                  .catch(e => core.warning(`Could not remove label: ${e.message}`));
+              }
+            }
+
+            // The OpenSpec proposal format only applies to changes that add or
+            // alter requirements, i.e. features. Docs, chore, fix, ci, test,
+            // refactor, style, build, and perf changes carry no requirement
+            // delta and are exempt, as are bug reports and other non-feature
+            // issues. A target is treated as a feature when its title uses the
+            // conventional `feat:` prefix or its branch starts with `feat/`.
+            const isFeature =
+              /^feat(\([^)]*\))?!?:/i.test(title) ||
+              /^feat\//i.test(branch) ||
+              labels.includes('feature') ||
+              labels.includes('enhancement');
+
+            if (!isFeature) {
+              await clearNeedsInfo();
+              core.info('Not a feature change; OpenSpec proposal format not required.');
+              return;
+            }
 
             const required = [
               { name: 'Why',                    pattern: /^#{1,3}\s*Why\b|^\*{2}Why\*{2}/im },
@@ -41,16 +72,9 @@ jobs:
             ];
 
             const missing = required.filter(r => !r.pattern.test(body)).map(r => r.name);
-            const issue_number = target.number;
-            const { owner, repo } = context.repo;
-
-            const labels = (target.labels || []).map(l => typeof l === 'string' ? l : l.name);
 
             if (missing.length === 0) {
-              if (labels.includes(label)) {
-                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: label })
-                  .catch(e => core.warning(`Could not remove label: ${e.message}`));
-              }
+              await clearNeedsInfo();
               core.info('All OpenSpec sections present.');
               return;
             }
@@ -58,11 +82,11 @@ jobs:
             const comment = [
               `### OpenSpec format check failed`,
               ``,
-              `This ${isPR ? 'pull request' : 'issue'} body is missing required OpenSpec sections:`,
+              `This feature ${isPR ? 'pull request' : 'issue'} is missing required OpenSpec sections:`,
               ``,
               ...missing.map(m => `- [ ] **${m}**`),
               ``,
-              `Please edit the body to include them. See the [contributing guide](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md) for the format.`,
+              `Feature changes must propose the new behavior formally. Non-feature changes (docs, chore, fix, ci, test, refactor, style, build, perf) are exempt and need no spec sections. See the [contributing guide](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md) for the format.`,
             ].join('\n');
 
             // Forked-PR tokens are read-only; fall back to failing the check.
