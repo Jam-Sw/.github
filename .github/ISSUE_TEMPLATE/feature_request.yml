@@ -11,19 +11,20 @@ body:
     id: problem
     attributes:
       label: Problem Statement
-      description: Is your feature request related to a problem or limitation?
-      placeholder: A clear and concise description of what the problem is.
+      description: A problem statement specifies an unmet technical need, its impact, and constraints without dictating the solution.
+      placeholder: Required.
     validations:
       required: true
   - type: textarea
     id: solution
     attributes:
       label: Proposed Solution
-      description: Describe the solution or workflow you would like to see.
+      description: Describe your proposed solution.
+      placeholder: What does a solution look like? What does the solution NOT look like?
     validations:
       required: true
   - type: textarea
     id: alternatives
     attributes:
-      label: Considered Alternatives
-      description: Describe any alternative solutions or features you've considered.
+      label: Solution Landscape
+      description: Describe any alternative or existing solutions.
