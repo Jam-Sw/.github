@@ -15,15 +15,19 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    # opened + labeled fire together on form-filed issues; keep one run.
+    concurrency:
+      group: openspec-${{ github.repository }}-${{ github.event.issue.number || github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
-      - name: Check body for required OpenSpec sections
+      - name: Check body for required sections
         uses: actions/github-script@v7
         env:
           NEEDS_INFO_LABEL: ${{ inputs.needs-info-label }}
         with:
           script: |
             const label = process.env.NEEDS_INFO_LABEL;
-            const isPR = !context.payload.pull_request;
+            const isPR = !!context.payload.pull_request;
             const target = isPR ? context.payload.pull_request : context.payload.issue;
             if (!target) {
               core.info('No issue or pull request in payload; nothing to validate.');
@@ -32,51 +36,67 @@ jobs:
 
             const labels = (target.labels || []).map(l => typeof l === 'string' ? l : l.name);
             const title = target.title || '';
-
-            // Bypass check for feature requests by title prefix or label
-            const isFeatureRequest = labels.includes('enhancement') ||
-              labels.includes('feature') ||
-              /^\[feature/i.test(title);
-
-            if (isFeatureRequest) {
-              core.info('Target is a feature request; skipping OpenSpec validation.');
-              if (labels.includes(label)) {
-                const issue_number = target.number;
-                const { owner, repo } = context.repo;
-                await github.rest.issues.removeLabel({ owner, repo, issue_number, name: label })
-                  .catch(e => core.warning(`Could not remove label: ${e.message}`));
-              }
-              return;
-            }
-
-            const body = target.body || '';
-
-            const required = [
-              { name: 'Why',                               pattern: /^#{1,3}\s*Why\b|^\*{2}Why\*{2}/im },
-              { name: 'What Changes',                      pattern: /^#{1,3}\s*What Changes\b|^\*{2}What Changes\*{2}/im },
-              { name: 'MODIFIED Requirements (RFC 2119)', pattern: /^#{1,3}\s*(MODIFIED|ADDED|REMOVED) Requirements\b/im },
-              { name: 'RFC 2119 keyword (SHALL/MUST)',    pattern: /\b(SHALL|MUST)\b/ },
-              { name: 'GIVEN/WHEN/THEN scenario',         pattern: /GIVEN[\s\S]*WHEN[\s\S]*THEN/ },
-              { name: 'Verification checklist',           pattern: /^#{1,3}\s*Verification\b[\s\S]*?\b\d+\.\d+\b/im },
-            ];
-
-            const missing = required.filter(r => !r.pattern.test(body)).map(r => r.name);
             const issue_number = target.number;
             const { owner, repo } = context.repo;
 
-            if (missing.length === 0) {
+            const clearLabel = async () => {
               if (labels.includes(label)) {
                 await github.rest.issues.removeLabel({ owner, repo, issue_number, name: label })
                   .catch(e => core.warning(`Could not remove label: ${e.message}`));
               }
-              core.info('All OpenSpec sections present.');
+            };
+
+            // CONTRIBUTING §5.3: bots (dependabot, Copilot) are exempt.
+            if (target.user && target.user.type === 'Bot') {
+              core.info(`Opened by bot ${target.user.login}; skipping validation.`);
+              return;
+            }
+
+            // CONTRIBUTING §3.2: feature-request issues use their own form.
+            const isFeatureRequest = !isPR && (labels.includes('enhancement') ||
+              labels.includes('feature') ||
+              /^\[feature/i.test(title));
+            if (isFeatureRequest) {
+              core.info('Target is a feature request; skipping validation.');
+              await clearLabel();
+              return;
+            }
+
+            // Template placeholders live in HTML comments; they do not count.
+            const body = (target.body || '').replace(/<!--[\s\S]*?-->/g, '');
+            const heading = names => new RegExp(`^#{1,3}\\s*(${names})\\b`, 'im');
+
+            // Every PR and issue (CONTRIBUTING §1). The older OpenSpec names
+            // "Why" and "What Changes" are accepted for Summary and Changes.
+            const required = [
+              { name: '§1.1 Summary', pattern: heading('Summary|Why') },
+              { name: '§1.2 Changes', pattern: heading('Changes|What Changes') },
+            ];
+            if (isPR) {
+              required.push({ name: '§1.3 Verification', pattern: heading('Verification') });
+            }
+            // Spec changes, marked with the `openspec` label (CONTRIBUTING §2).
+            if (labels.includes('openspec')) {
+              required.push(
+                { name: '§2.1 ADDED / MODIFIED / REMOVED Requirements', pattern: heading('(ADDED|MODIFIED|REMOVED) Requirements') },
+                { name: '§2.1 RFC 2119 keyword (SHALL/MUST)', pattern: /\b(SHALL|MUST)\b/ },
+                { name: '§2.2 GIVEN/WHEN/THEN scenario', pattern: /GIVEN[\s\S]*WHEN[\s\S]*THEN/ },
+                { name: '§1.3 Verification', pattern: heading('Verification') },
+              );
+            }
+
+            const missing = [...new Set(required.filter(r => !r.pattern.test(body)).map(r => r.name))];
+
+            if (missing.length === 0) {
+              await clearLabel();
+              core.info('All required sections present.');
               return;
             }
 
             const comment = [
               `### OpenSpec format check failed`,
               ``,
-              `This ${isPR ? 'pull request' : 'issue'} body is missing required OpenSpec sections:`,
+              `This ${isPR ? 'pull request' : 'issue'} body is missing required sections:`,
               ``,
               ...missing.map(m => `- [ ] **${m}**`),
               ``,
@@ -98,4 +118,4 @@ jobs:
               core.warning(`Could not label/comment (read-only token?): ${e.message}`);
             }
 
-            core.setFailed(`Missing OpenSpec sections: ${missing.join(', ')}`);
+            core.setFailed(`Missing sections: ${missing.join(', ')}`);
