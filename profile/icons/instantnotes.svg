@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="InstantNotes icon">
+  <title>InstantNotes</title>
+  <defs>
+    <clipPath id="plate"><rect x="100" y="100" width="824" height="824" rx="185"/></clipPath>
+    <clipPath id="bolt"><polygon points="548,178 712,178 596,416 724,416 436,852 506,566 364,566"/></clipPath>
+    <filter id="grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.36" numOctaves="2" seed="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" result="gray"
+        values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 1 0"/>
+      <feComponentTransfer in="gray" result="stipple">
+        <feFuncR type="linear" slope="1.45" intercept="-0.22"/>
+        <feFuncG type="linear" slope="1.45" intercept="-0.22"/>
+        <feFuncB type="linear" slope="1.45" intercept="-0.22"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="stipple" mode="overlay" result="printed"/>
+      <feComposite in="printed" in2="SourceGraphic" operator="in"/>
+    </filter>
+  </defs>
+  <g clip-path="url(#plate)" filter="url(#grain)">
+    <rect x="100" y="100" width="824" height="824" fill="#1664D0"/>
+
+    <!-- recessed note the bolt strikes: depth layers, deep fold -->
+    <polygon points="232,260 644,260 792,408 792,812 232,812" fill="#12367A"/>
+    <polygon points="644,260 644,408 792,408" fill="#081A40"/>
+
+    <!-- bolt: hero, paper body + lower-right shadow facet + accent upper-left -->
+    <g clip-path="url(#bolt)">
+      <rect x="360" y="172" width="370" height="684" fill="#F3F0E6"/>
+      <polygon points="600,450 760,360 760,870 470,870" fill="#3A74B8"/>
+      <polygon points="540,172 660,172 552,286" fill="#F5C400"/>
+    </g>
+  </g>
+</svg>

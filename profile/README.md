@@ -1,21 +1,35 @@
 <div align="center">
 
-# Jam-Sw
+<img src="./README_icon.svg" alt="Jam-Sw anvil" width="220">
 
-**Software that gets out of your way.**
-Optimized & focused tools for supercharging your daily tasks
-
-| Found a bug or have an idea? |
-| --- |
-| [Contact](mailto:jam.sw.org@gmail.com) · [Contributing](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md) |
+***Straight to the useful part.***
 
 </div>
 
----
+<img src="./banners/products.svg" alt="Products" width="100%">
 
-| Product | What it does | Status |
-| --- | --- | --- |
-| **[lineage](https://github.com/Jam-Sw/lineage)** |  computes every line you have ever added and removed across your entire GitHub account, by language, and shows the net number | Stable ️✅ |
-| **[reveil](https://www.npmjs.com/package/@filecrop/reveil)** | Cross-platform CLI that wakes your whole toolchain: one command updates every package manager in parallel, with a live status board, framed output, version and size deltas, and OS-native scheduling on macOS. | Stable ️✅ |
-| **[InstantNotes](https://github.com/Jam-Sw/InstantNotes)** | Native macOS notes app built around instant capture: a global shortcut summons a capture panel, full-text search retrieves anything, tags replace folders. Local-first and private. | Stable ️✅ |
-| **Enshortification** | Chrome extension that opens every YouTube video at its most relevant highlight and surfaces the runner-up moments as clickable chips: ranked locally from replay heatmaps, comment hot spots, and your own habits. | Development |
+<table width="100%">
+	<tr>
+		<td align="left" width="190"><img src="./icons/lineage.svg" alt="" width="40" height="40" align="left"><strong>Lineage</strong><br><img src="./badges/lineage.svg" alt="latest release and status" height="16"></td>
+		<td align="right">Your lifetime of code on GitHub, counted line by line and sorted by language, live in the menu bar.</td>
+	</tr>
+	<tr>
+		<td align="left" width="190"><img src="./icons/fennec.svg" alt="" width="40" height="40" align="left"><strong>Fennec</strong><br><img src="./badges/fennec.svg" alt="latest release and status" height="16"></td>
+		<td align="right">Hold a key, speak, and release. Dictation for macOS that runs entirely on your Mac, terminals included.</td>
+	</tr>
+	<tr>
+		<td align="left" width="190"><img src="./icons/coming-soon.svg" alt="" width="40" height="40" align="left"><strong>img2text</strong><br><img src="./badges/img2text.svg" alt="latest release and status" height="16"></td>
+		<td align="right">Turns images and GIFs into copyable text art, from plain ASCII to true-colour pixels.</td>
+	</tr>
+	<tr>
+		<td align="left" width="190"><img src="./icons/instantnotes.svg" alt="" width="40" height="40" align="left"><strong><a href="https://github.com/Jam-Sw/InstantNotes">InstantNotes</a></strong><br><img src="./badges/instantnotes.svg" alt="latest release and status" height="16"></td>
+		<td align="right">Capture a thought from anywhere with one shortcut, then find it again in seconds.</td>
+	</tr>
+</table>
+
+<details>
+<summary>See More</summary>
+
+[Report a security issue](https://github.com/Jam-Sw/.github/blob/main/SECURITY.md).
+
+</details>
