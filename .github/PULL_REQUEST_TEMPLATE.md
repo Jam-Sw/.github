@@ -1,50 +1,54 @@
-<!-- Jam&Sw pull requests.
-     Feature PRs (title `feat:` or branch `feat/`) must also fill the
-     "Feature PRs only" block at the bottom. For docs, chore, fix, ci, test,
-     refactor, style, build, and perf PRs, delete that block and keep just
-     Summary, Changes, and Verification.
+<!-- Jam-Sw pull requests.
+     Every PR includes Summary, Changes, and Verification. Feature PRs (title
+     `feat:`, source branch `feat/`, or `feature`/`enhancement` label) must also
+     keep and complete the OpenSpec block below, and carry the `openspec` label.
+     Delete the OpenSpec block for non-feature PRs.
      See https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md -->
 
 ## Summary
 
-<!-- One or two sentences on what ships and why. -->
+<!-- Why this change exists and what it affects, in one or two sentences. -->
 
 ## Changes
 
-<!-- Bullet summary of the changes, noun-first and concrete. -->
+<!-- One bullet per observable difference in behavior or structure. -->
 
 -
 
 ## Verification
 
-<!-- Checklist a reviewer can follow: a command or a user-visible behavior per line.
-     Feature PRs use hierarchical numbering (1.1, 1.2, ...) mapping onto the scenario. -->
+<!-- Checklist of what you ran or checked. Feature PRs use numbered steps mapping to the scenario. -->
 
-- [ ] 1.1
-- [ ] 1.2
+- [ ]
 
-<!-- ───────── Feature PRs only: delete this entire block for non-feature PRs ─────────
+<!-- ───────── Feature PRs only: keep this block for feature PRs ─────────
 
 ## Why
 
-Concise statement of the problem this PR solves and its impact.
+Why the change matters, in one or two sentences.
 
 ## What Changes
 
 - Each bullet is one observable difference in behavior or structure.
 
-## MODIFIED Requirements
+Use one of these headings: `## ADDED Requirements`,
+`## MODIFIED Requirements`, or `## REMOVED Requirements`.
 
-State the new or changed behavior in RFC 2119 language (SHALL, MUST, SHOULD, MAY).
-Include "(Previously: ...)" notes for changed behavior. Use ADDED Requirements for
-new behavior and REMOVED Requirements, with rationale, for removed behavior.
+State the correct behavior in RFC 2119 language (SHALL, MUST, SHOULD, MAY).
+For modified behavior, include a `(Previously: ...)` note. For removed
+requirements, include the rationale.
 
-### Requirement:
+### Requirement: <name>
+The <subject> SHALL ...
 
 ## Scenario
 
-GIVEN
-WHEN
-THEN
+GIVEN ...
+WHEN ...
+THEN ...
+
+## Verification
+
+- [ ] 1.1 <verification step>
 
 ──────────────────────────────────────────────────────────────────────────── -->

@@ -1,0 +1,30 @@
+name: Feature Request
+description: Propose a new feature, idea, or concept.
+title: "[Feature Request]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature!
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: A problem statement specifies an unmet technical need, its impact, and constraints without dictating the solution.
+      placeholder: Required.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution.
+      placeholder: What does a solution look like? What does the solution NOT look like?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Solution Landscape
+      description: Describe any alternative or existing solutions.

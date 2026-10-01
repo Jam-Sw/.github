@@ -1,68 +1,71 @@
-# Contributing to Jam&Sw
+# Contributing to Jam-Sw
 
-Feature work in the Jam&Sw organization follows the **OpenSpec format**. It
-makes changes reviewable, testable, and honest: a reader should be able to
-understand why a change exists, what the correct behavior is, and exactly how
-to verify it, without reading the diff first.
+Sections are cited by number, for example "missing §1.3". The format check
+(§5) uses the same numbers in its comments.
 
-## When the OpenSpec format is required
+## §1 Every pull request
 
-The format applies to **feature changes**: anything that adds or alters a
-requirement or user-visible behavior. The reusable workflow classifies a PR
-as a feature when its title starts with `feat:` (optionally with a scope or
-breaking-change marker), its source branch starts with `feat/`, or it has the
-`feature` or `enhancement` label. It classifies an issue as a feature request
-when its title starts with `[Feature` or it has either label; feature-request
-issues are then skipped because their form is not format-checked.
+A PR body contains these three sections, in order:
 
-Everything else is exempt from the spec sections: `docs:`, `chore:`, `fix:`,
-`ci:`, `test:`, `refactor:`, `style:`, `build:`, and `perf:` changes, along
-with bug reports and other non-feature issues. Write a plain Summary / Changes
-/ Verification body for PRs. Forcing requirement language and
-GIVEN/WHEN/THEN scenarios onto a docs typo or a dependency bump adds noise,
-not clarity.
+### §1.1 Summary
 
-Feature changes must carry the `openspec` label. The reusable workflow does
-not verify or apply that label; maintainers are responsible for applying it.
+Why the change exists and what it affects, in one or two sentences. Not
+"what I did": *why it matters*.
 
-## The OpenSpec format
+### §1.2 Changes
 
-A **feature PR** body contains the general PR sections (Summary, Changes,
-and Verification) plus the OpenSpec sections below. Feature-request issues
-use the feature form and are skipped by the reusable workflow; bug reports
-and other issues follow the issue checks described under Enforcement.
+A bullet list. Each bullet is one observable difference in behavior or
+structure.
 
-### 1. Why
+### §1.3 Verification
 
-A concise statement of the problem and its impact. Not "what I did": *why
-it matters*. One or two sentences is usually enough.
-
-### 2. What Changes
-
-A bullet summary of the change. Each bullet is one observable difference in
-behavior or structure.
-
-### 3. MODIFIED Requirements
-
-The correct behavior, stated formally in **RFC 2119 language** (see below).
-For changed behavior, include a `(Previously: ...)` note describing the old
-or broken state, so the delta is explicit:
+A checkbox list of what was run or checked to prove the change works. Tick
+each box as you verify it.
 
 ```markdown
+## Summary
+
+Apply the license the product register assigns to this repo.
+
+## Changes
+
+- Add `LICENSE` and `EULA.txt`
+- Link both from the README
+
+## Verification
+
+- [x] `swift build` passes
+- [x] README links resolve
+```
+
+The headings `Why` and `What Changes` are accepted in place of `Summary`
+and `Changes`.
+
+## §2 Spec changes
+
+A PR that adds, changes, or removes product behavior carries the `openspec`
+label and, in addition to §1, the two parts below. Chores, docs, CI,
+licensing, and dependency updates do not need them.
+
+### §2.1 Requirements
+
+The correct behavior, stated in RFC 2119 language (§4), under one of three
+headings: `ADDED Requirements`, `MODIFIED Requirements`, or
+`REMOVED Requirements` (with the rationale).
+
+```markdown
+## ADDED Requirements
+
 ### Requirement: Draft preservation
 The capture panel SHALL preserve unsaved draft content when dismissed,
 and MUST restore it when the panel is next summoned.
-(Previously: dismissing the panel discarded the draft silently.)
 ```
 
-New requirements use `ADDED Requirements`; removed ones use
-`REMOVED Requirements` with the rationale.
+### §2.2 Scenario
 
-### 4. Scenario
-
-A concrete, observable **GIVEN / WHEN / THEN** test case a reviewer can
-follow step-by-step to verify the change. Embed before/after screenshots
-directly in context where they help.
+At least one concrete **GIVEN / WHEN / THEN** case a reviewer can follow
+step by step. It may sit under its requirement or under its own `Scenario`
+heading. Embed before/after screenshots where they help.
 
 ```text
 GIVEN the capture panel is open with the text "buy milk" typed
@@ -70,13 +73,17 @@ WHEN the user presses Escape and then re-opens the panel
 THEN the panel displays "buy milk" in the input field
 ```
 
-### 5. Verification
+## §3 Issues
 
-A numbered checklist using hierarchical numbering (`1.1`, `1.2`, …) that
-maps directly onto the scenario. In PRs, check the boxes off as you verify
-each step.
+- **§3.1** Bug reports use the bug form, which asks for Why, What Changes,
+  MODIFIED Requirements, Scenario, and Verification, and applies the
+  `openspec` label.
+- **§3.2** Feature requests use the feature form (Problem Statement,
+  Proposed Solution, Solution Landscape) and are not format-checked.
+- **§3.3** Any other issue has a Summary (or Why) and a Changes (or What
+  Changes) section.
 
-## RFC 2119 conventions
+## §4 RFC 2119 conventions
 
 Requirement language follows [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119):
 
@@ -87,30 +94,36 @@ Requirement language follows [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119):
 | **SHOULD** / **SHOULD NOT** | A strong recommendation; deviations need a documented reason. |
 | **MAY** | Truly optional behavior. |
 
-Write keywords in UPPERCASE so they are unambiguous and machine-checkable.
-Each requirement statement names its subject explicitly ("The capture panel
-SHALL…", never "It should…").
+- **§4.1** Write keywords in UPPERCASE so they are unambiguous and
+  machine-checkable.
+- **§4.2** Each requirement statement names its subject explicitly ("The
+  capture panel SHALL…", never "It should…").
 
-## Enforcement
+## §5 Enforcement
 
-- The reusable workflow
+- **§5.1** Blank issues are disabled by the organization's default issue
+  templates. A repository with its own templates sets this itself (§6).
+- **§5.2** The reusable workflow
   [`validate-openspec.yml`](.github/workflows/validate-openspec.yml) checks
-  every PR body for Summary and Changes; it also checks Verification for PRs.
-  When a PR is classified as a feature, it additionally requires Why, What
-  Changes, a Requirements heading and SHALL/MUST keyword, a GIVEN/WHEN/THEN
-  scenario, and a numbered Verification checklist. Repositories opt in with
-  the caller in [`examples/validate.yml`](examples/validate.yml).
-- Issues labeled `feature` or `enhancement`, or with a title beginning
-  `[Feature`, are skipped by the workflow. Other issue bodies are checked for
-  Summary (or Why) and Changes (or What Changes); if labeled `openspec`, they
-  are also checked for the requirements, keyword, scenario, and verification
-  checklist. The workflow does not require or apply the `openspec` label.
-- A body missing its applicable sections fails the check, gets a `needs-info`
-  label, and gets a comment listing what's missing. The label is removed once
-  the body is fixed or no longer subject to the checks.
+  every PR for §1.1–§1.3. Feature PRs are additionally checked for §2.1,
+  §2.2, and a numbered §1.3 checklist. A PR is classified as a feature when
+  its title starts with `feat:`
+  (optionally scoped or marked as breaking), its source branch starts with
+  `feat/`, or it has the `feature` or `enhancement` label. Repositories opt in
+  with the caller in [`examples/validate.yml`](examples/validate.yml).
+- **§5.3** Issues labeled `feature` or `enhancement`, or with a title beginning
+  `[Feature`, use the feature-request form and are skipped. Other issues are
+  checked for Summary (or Why) and Changes (or What Changes); issues labeled
+  `openspec` are also checked for §2.1, §2.2, and a numbered Verification
+  checklist. The workflow does not require or apply the `openspec` label;
+  maintainers apply it as required by §2.
+- **§5.4** Bot-authored PRs and issues are exempt.
+- **§5.5** A body missing applicable sections fails the check, gets a
+  `needs-info` label, and gets a comment listing the missing sections by
+  number. The label is removed once the body is fixed or no longer subject to
+  the checks.
 
-## Repository-local overrides
+## §6 Repository-local overrides
 
 A repository that defines its own templates overrides these organization
-defaults. Only do this when a repo genuinely needs extra fields: keep the
-OpenSpec sections intact.
+defaults. Only do this when a repo needs extra fields, and keep §1 intact.

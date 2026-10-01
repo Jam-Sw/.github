@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        All Jam&Sw issues follow the **OpenSpec format**. Each section below is required.
+        Bug reports follow the **OpenSpec format**. Each section below is required.
         See [CONTRIBUTING.md](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md)
         for the format and RFC 2119 conventions.
 
@@ -37,12 +37,10 @@ body:
       label: MODIFIED Requirements
       description: >
         State the correct behavior using RFC 2119 language (SHALL, MUST, SHOULD, MAY).
-        Include a "(Previously: ...)" note describing the broken behavior.
       placeholder: |
         ### Requirement: Draft preservation
         The capture panel SHALL preserve unsaved draft content when dismissed,
         and MUST restore it when the panel is next summoned.
-        (Previously: dismissing the panel discarded the draft silently.)
     validations:
       required: true
 
@@ -62,7 +60,7 @@ body:
     id: verification
     attributes:
       label: Verification
-      description: Numbered checklist (1.1, 1.2, ...) mapping onto the scenario.
+      description: Checklist of steps that confirm the fix, mapping onto the scenario.
       placeholder: |
         1.1 Open the capture panel and type text
         1.2 Press Escape to dismiss the panel
