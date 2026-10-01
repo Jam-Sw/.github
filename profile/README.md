@@ -10,20 +10,20 @@
 
 <table width="100%">
 	<tr>
+		<td align="left" width="190"><img src="./icons/instantnotes.svg" alt="" width="40" height="40" align="left"><strong><a href="https://github.com/Jam-Sw/InstantNotes#readme-ov-file">InstantNotes</a></strong><br><img src="./badges/instantnotes.svg" alt="latest release and status" height="16"></td>
+		<td align="right">Quickly capture your ideas & organize your thoughts, knowledge grows.</td>
+	</tr>
+	<tr>
 		<td align="left" width="190"><img src="./icons/lineage.svg" alt="" width="40" height="40" align="left"><strong><a href="https://github.com/Jam-Sw/lineage#readme-ov-file">Lineage</a></strong><br><img src="./badges/lineage.svg" alt="latest release and status" height="16"></td>
-		<td align="right">Your lifetime of code on GitHub, counted line by line and sorted by language, live in the menu bar.</td>
+		<td align="right">Your lifetime of code on GitHub, visualized.</td>
 	</tr>
 	<tr>
 		<td align="left" width="190"><img src="./icons/fennec.svg" alt="" width="40" height="40" align="left"><strong><a href="https://github.com/Jam-Sw/fennec#readme-ov-file">Fennec</a></strong><br><img src="./badges/fennec.svg" alt="latest release and status" height="16"></td>
-		<td align="right">Hold a key, speak, and release. Dictation for macOS that runs entirely on your Mac, terminals included.</td>
+		<td align="right"> Real Time Voice Transcription (speak into claude) (MacOS)</td>
 	</tr>
 	<tr>
 		<td align="left" width="190"><img src="./icons/coming-soon.svg" alt="" width="40" height="40" align="left"><strong><a href="https://github.com/Jam-Sw/img2text#readme-ov-file">img2text</a></strong><br><img src="./badges/img2text.svg" alt="latest release and status" height="16"></td>
-		<td align="right">Turns images and GIFs into copyable text art, from plain ASCII to true-colour pixels.</td>
-	</tr>
-	<tr>
-		<td align="left" width="190"><img src="./icons/instantnotes.svg" alt="" width="40" height="40" align="left"><strong><a href="https://github.com/Jam-Sw/InstantNotes#readme-ov-file">InstantNotes</a></strong><br><img src="./badges/instantnotes.svg" alt="latest release and status" height="16"></td>
-		<td align="right">Capture a thought from anywhere with one shortcut, then find it again in seconds.</td>
+		<td align="right">Tool for images & GIFs conversion into text art, ASCII, pixels, more.</td>
 	</tr>
 </table>
 
