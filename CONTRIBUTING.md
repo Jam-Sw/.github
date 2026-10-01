@@ -8,20 +8,29 @@ to verify it, without reading the diff first.
 ## When the OpenSpec format is required
 
 The format applies to **feature changes**: anything that adds or alters a
-requirement or user-visible behavior. A change is treated as a feature when
-its title uses the conventional `feat:` prefix or its branch starts with
-`feat/`.
+requirement or user-visible behavior. The reusable workflow classifies a PR
+as a feature when its title starts with `feat:` (optionally with a scope or
+breaking-change marker), its source branch starts with `feat/`, or it has the
+`feature` or `enhancement` label. It classifies an issue as a feature request
+when its title starts with `[Feature` or it has either label; feature-request
+issues are then skipped because their form is not format-checked.
 
-Everything else is exempt and needs no spec sections: `docs:`, `chore:`,
-`fix:`, `ci:`, `test:`, `refactor:`, `style:`, `build:`, and `perf:` changes,
-along with bug reports and other non-feature issues. Write a plain Summary /
-Changes / Verification body for those. Forcing requirement language and
+Everything else is exempt from the spec sections: `docs:`, `chore:`, `fix:`,
+`ci:`, `test:`, `refactor:`, `style:`, `build:`, and `perf:` changes, along
+with bug reports and other non-feature issues. Write a plain Summary / Changes
+/ Verification body for PRs. Forcing requirement language and
 GIVEN/WHEN/THEN scenarios onto a docs typo or a dependency bump adds noise,
 not clarity.
 
+Feature changes must carry the `openspec` label. The reusable workflow does
+not verify or apply that label; maintainers are responsible for applying it.
+
 ## The OpenSpec format
 
-Every **feature** issue and PR body contains these sections, in order:
+A **feature PR** body contains the general PR sections (Summary, Changes,
+and Verification) plus the OpenSpec sections below. Feature-request issues
+use the feature form and are skipped by the reusable workflow; bug reports
+and other issues follow the issue checks described under Enforcement.
 
 ### 1. Why
 
@@ -86,14 +95,19 @@ SHALL…", never "It should…").
 
 - The reusable workflow
   [`validate-openspec.yml`](.github/workflows/validate-openspec.yml) checks
-  feature issue and PR bodies for the required sections. Repositories opt in
-  with the two-line caller in [`examples/validate.yml`](examples/validate.yml).
-- The workflow only runs its checks on feature changes (title `feat:` or
-  branch `feat/`, or an issue labeled `feature`/`enhancement`). Non-feature
-  changes pass automatically.
-- Feature bodies missing sections get a `needs-info` label and a comment
-  listing what's missing; the label is removed automatically once the body is
-  fixed, or once the change is reclassified as non-feature.
+  every PR body for Summary and Changes; it also checks Verification for PRs.
+  When a PR is classified as a feature, it additionally requires Why, What
+  Changes, a Requirements heading and SHALL/MUST keyword, a GIVEN/WHEN/THEN
+  scenario, and a numbered Verification checklist. Repositories opt in with
+  the caller in [`examples/validate.yml`](examples/validate.yml).
+- Issues labeled `feature` or `enhancement`, or with a title beginning
+  `[Feature`, are skipped by the workflow. Other issue bodies are checked for
+  Summary (or Why) and Changes (or What Changes); if labeled `openspec`, they
+  are also checked for the requirements, keyword, scenario, and verification
+  checklist. The workflow does not require or apply the `openspec` label.
+- A body missing its applicable sections fails the check, gets a `needs-info`
+  label, and gets a comment listing what's missing. The label is removed once
+  the body is fixed or no longer subject to the checks.
 
 ## Repository-local overrides
 
