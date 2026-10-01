@@ -1,45 +1,71 @@
 # Contributing to Jam-Sw
 
-Every issue and pull request in the Jam-Sw organization follows the
-**OpenSpec format**. It makes changes reviewable, testable, and honest: a
-reader should be able to understand why a change exists, what the correct
-behavior is, and exactly how to verify it: without reading the diff first.
+Sections are cited by number, for example "missing §1.3". The format check
+(§5) uses the same numbers in its comments.
 
-## The OpenSpec format
+## §1 Every pull request
 
-Every issue and PR body contains these sections, in order:
+A PR body contains these three sections, in order:
 
-### 1. Why
+### §1.1 Summary
 
-A concise statement of the problem and its impact. Not "what I did": *why
-it matters*. One or two sentences is usually enough.
+Why the change exists and what it affects, in one or two sentences. Not
+"what I did": *why it matters*.
 
-### 2. What Changes
+### §1.2 Changes
 
-A bullet summary of the change. Each bullet is one observable difference in
-behavior or structure.
+A bullet list. Each bullet is one observable difference in behavior or
+structure.
 
-### 3. MODIFIED Requirements
+### §1.3 Verification
 
-The correct behavior, stated formally in **RFC 2119 language** (see below).
-For changed behavior, include a `(Previously: ...)` note describing the old
-or broken state, so the delta is explicit:
+A checkbox list of what was run or checked to prove the change works. Tick
+each box as you verify it.
 
 ```markdown
+## Summary
+
+Apply the license the product register assigns to this repo.
+
+## Changes
+
+- Add `LICENSE` and `EULA.txt`
+- Link both from the README
+
+## Verification
+
+- [x] `swift build` passes
+- [x] README links resolve
+```
+
+The headings `Why` and `What Changes` are accepted in place of `Summary`
+and `Changes`.
+
+## §2 Spec changes
+
+A PR that adds, changes, or removes product behavior carries the `openspec`
+label and, in addition to §1, the two parts below. Chores, docs, CI,
+licensing, and dependency updates do not need them.
+
+### §2.1 Requirements
+
+The correct behavior, stated in RFC 2119 language (§4), under one of three
+headings: `ADDED Requirements`, `MODIFIED Requirements`, or
+`REMOVED Requirements` (with the rationale).
+
+```markdown
+## ADDED Requirements
+
 ### Requirement: Draft preservation
 The capture panel SHALL preserve unsaved draft content when dismissed,
 and MUST restore it when the panel is next summoned.
-(Previously: dismissing the panel discarded the draft silently.)
 ```
 
-New requirements use `ADDED Requirements`; removed ones use
-`REMOVED Requirements` with the rationale.
+### §2.2 Scenario
 
-### 4. Scenario
-
-A concrete, observable **GIVEN / WHEN / THEN** test case a reviewer can
-follow step-by-step to verify the change. Embed before/after screenshots
-directly in context where they help.
+At least one concrete **GIVEN / WHEN / THEN** case a reviewer can follow
+step by step. It may sit under its requirement or under its own `Scenario`
+heading. Embed before/after screenshots where they help.
 
 ```text
 GIVEN the capture panel is open with the text "buy milk" typed
@@ -47,13 +73,17 @@ WHEN the user presses Escape and then re-opens the panel
 THEN the panel displays "buy milk" in the input field
 ```
 
-### 5. Verification
+## §3 Issues
 
-A numbered checklist using hierarchical numbering (`1.1`, `1.2`, …) that
-maps directly onto the scenario. In PRs, check the boxes off as you verify
-each step.
+- **§3.1** Bug reports use the bug form, which asks for Why, What Changes,
+  MODIFIED Requirements, Scenario, and Verification, and applies the
+  `openspec` label.
+- **§3.2** Feature requests use the feature form (Problem Statement,
+  Proposed Solution, Solution Landscape) and are not format-checked.
+- **§3.3** Any other issue has a Summary (or Why) and a Changes (or What
+  Changes) section.
 
-## RFC 2119 conventions
+## §4 RFC 2119 conventions
 
 Requirement language follows [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119):
 
@@ -64,23 +94,26 @@ Requirement language follows [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119):
 | **SHOULD** / **SHOULD NOT** | A strong recommendation; deviations need a documented reason. |
 | **MAY** | Truly optional behavior. |
 
-Write keywords in UPPERCASE so they are unambiguous and machine-checkable.
-Each requirement statement names its subject explicitly ("The capture panel
-SHALL…", never "It should…").
+- **§4.1** Write keywords in UPPERCASE so they are unambiguous and
+  machine-checkable.
+- **§4.2** Each requirement statement names its subject explicitly ("The
+  capture panel SHALL…", never "It should…").
 
-## Enforcement
+## §5 Enforcement
 
-- Issue forms in this repository require every OpenSpec section, and blank
-  issues are disabled organization-wide.
-- The reusable workflow
+- **§5.1** Blank issues are disabled by the organization's default issue
+  templates. A repository with its own templates sets this itself (§6).
+- **§5.2** The reusable workflow
   [`validate-openspec.yml`](.github/workflows/validate-openspec.yml) checks
-  issue and PR bodies for the required sections. Repositories opt in with the
-  two-line caller in [`examples/validate.yml`](examples/validate.yml).
-- Bodies missing sections get a `needs-info` label and a comment listing
-  what's missing; the label is removed automatically once the body is fixed.
+  PR and issue bodies against §1 to §3. It runs only in repositories that
+  add the caller in [`examples/validate.yml`](examples/validate.yml). Today
+  those are InstantNotes and lineage.
+- **§5.3** PRs and issues opened by bots (dependabot, Copilot) are exempt.
+- **§5.4** A body missing sections fails the check, gets a `needs-info`
+  label, and gets a comment listing the missing sections by number. The
+  label is removed once the body is fixed.
 
-## Repository-local overrides
+## §6 Repository-local overrides
 
 A repository that defines its own templates overrides these organization
-defaults. Only do this when a repo genuinely needs extra fields: keep the
-OpenSpec sections intact.
+defaults. Only do this when a repo needs extra fields, and keep §1 intact.
