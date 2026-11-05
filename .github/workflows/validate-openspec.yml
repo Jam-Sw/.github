@@ -15,7 +15,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    # opened + labeled fire together on form-filed issues; keep one run.
+    # Opened and labeled events can fire together for issue forms; serialize runs.
     concurrency:
       group: openspec-${{ github.repository }}-${{ github.event.issue.number || github.event.pull_request.number }}
       cancel-in-progress: true
@@ -35,7 +35,8 @@ jobs:
             }
 
             const labels = (target.labels || []).map(l => typeof l === 'string' ? l : l.name);
-            const title = target.title || '';
+            const title = (target.title || '').trim();
+            const branch = isPR ? ((context.payload.pull_request.head || {}).ref || '') : '';
             const issue_number = target.number;
             const { owner, repo } = context.repo;
 
@@ -46,13 +47,13 @@ jobs:
               }
             };
 
-            // CONTRIBUTING §5.3: bots (dependabot, Copilot) are exempt.
+            // CONTRIBUTING §5.4: bot-authored targets are exempt.
             if (target.user && target.user.type === 'Bot') {
               core.info(`Opened by bot ${target.user.login}; skipping validation.`);
               return;
             }
 
-            // CONTRIBUTING §3.2: feature-request issues use their own form.
+            // CONTRIBUTING §5.3: feature-request issues use their own form.
             const isFeatureRequest = !isPR && (labels.includes('enhancement') ||
               labels.includes('feature') ||
               /^\[feature/i.test(title));
@@ -62,12 +63,18 @@ jobs:
               return;
             }
 
-            // Template placeholders live in HTML comments; they do not count.
             const body = (target.body || '').replace(/<!--[\s\S]*?-->/g, '');
             const heading = names => new RegExp(`^#{1,3}\\s*(${names})\\b`, 'im');
 
-            // Every PR and issue (CONTRIBUTING §1). The older OpenSpec names
-            // "Why" and "What Changes" are accepted for Summary and Changes.
+            // CONTRIBUTING §5.2: feature PR classification.
+            const isFeaturePR = isPR && (
+              /^feat(\([^)]*\))?!?:/i.test(title) ||
+              /^feat\//i.test(branch) ||
+              labels.includes('feature') ||
+              labels.includes('enhancement')
+            );
+
+            // Every PR and non-feature issue has baseline sections.
             const required = [
               { name: '§1.1 Summary', pattern: heading('Summary|Why') },
               { name: '§1.2 Changes', pattern: heading('Changes|What Changes') },
@@ -75,13 +82,14 @@ jobs:
             if (isPR) {
               required.push({ name: '§1.3 Verification', pattern: heading('Verification') });
             }
-            // Spec changes, marked with the `openspec` label (CONTRIBUTING §2).
-            if (labels.includes('openspec')) {
+
+            // Feature PRs and issues carrying `openspec` need the spec details.
+            if (isFeaturePR || labels.includes('openspec')) {
               required.push(
                 { name: '§2.1 ADDED / MODIFIED / REMOVED Requirements', pattern: heading('(ADDED|MODIFIED|REMOVED) Requirements') },
                 { name: '§2.1 RFC 2119 keyword (SHALL/MUST)', pattern: /\b(SHALL|MUST)\b/ },
                 { name: '§2.2 GIVEN/WHEN/THEN scenario', pattern: /GIVEN[\s\S]*WHEN[\s\S]*THEN/ },
-                { name: '§1.3 Verification', pattern: heading('Verification') },
+                { name: '§1.3 Numbered Verification checklist', pattern: /^#{1,3}\s*Verification\b[\s\S]*?\b\d+\.\d+\b/im },
               );
             }
 
@@ -96,11 +104,11 @@ jobs:
             const comment = [
               `### OpenSpec format check failed`,
               ``,
-              `This ${isPR ? 'pull request' : 'issue'} body is missing required sections:`,
+              `This ${isFeaturePR ? 'feature ' : ''}${isPR ? 'pull request' : 'issue'} body is missing required sections:`,
               ``,
               ...missing.map(m => `- [ ] **${m}**`),
               ``,
-              `Please edit the body to include them. See the [contributing guide](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md) for the format.`,
+              `Please edit the body to include them. The workflow validates sections but does not apply the \`openspec\` label; maintainers apply labels required by the contributing guide. See the [contributing guide](https://github.com/Jam-Sw/.github/blob/main/CONTRIBUTING.md) for the format.`,
             ].join('\n');
 
             // Forked-PR tokens are read-only; fall back to failing the check.

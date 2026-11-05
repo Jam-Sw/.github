@@ -105,13 +105,23 @@ Requirement language follows [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119):
   templates. A repository with its own templates sets this itself (§6).
 - **§5.2** The reusable workflow
   [`validate-openspec.yml`](.github/workflows/validate-openspec.yml) checks
-  PR and issue bodies against §1 to §3. It runs only in repositories that
-  add the caller in [`examples/validate.yml`](examples/validate.yml). Today
-  those are InstantNotes and lineage.
-- **§5.3** PRs and issues opened by bots (dependabot, Copilot) are exempt.
-- **§5.4** A body missing sections fails the check, gets a `needs-info`
-  label, and gets a comment listing the missing sections by number. The
-  label is removed once the body is fixed.
+  every PR for §1.1–§1.3. Feature PRs are additionally checked for §2.1,
+  §2.2, and a numbered §1.3 checklist. A PR is classified as a feature when
+  its title starts with `feat:`
+  (optionally scoped or marked as breaking), its source branch starts with
+  `feat/`, or it has the `feature` or `enhancement` label. Repositories opt in
+  with the caller in [`examples/validate.yml`](examples/validate.yml).
+- **§5.3** Issues labeled `feature` or `enhancement`, or with a title beginning
+  `[Feature`, use the feature-request form and are skipped. Other issues are
+  checked for Summary (or Why) and Changes (or What Changes); issues labeled
+  `openspec` are also checked for §2.1, §2.2, and a numbered Verification
+  checklist. The workflow does not require or apply the `openspec` label;
+  maintainers apply it as required by §2.
+- **§5.4** Bot-authored PRs and issues are exempt.
+- **§5.5** A body missing applicable sections fails the check, gets a
+  `needs-info` label, and gets a comment listing the missing sections by
+  number. The label is removed once the body is fixed or no longer subject to
+  the checks.
 
 ## §6 Repository-local overrides
 
